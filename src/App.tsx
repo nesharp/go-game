@@ -1,7 +1,12 @@
-import GoBoard from "./widgets/Game/ui";
+import { GameProvider } from "./entities/game";
+import { Area } from "./widgets/Area";
 
 function App() {
-  return <GoBoard />;
+  return (
+    <GameProvider>
+      <Area />
+    </GameProvider>
+  );
 }
 
 export default App;
