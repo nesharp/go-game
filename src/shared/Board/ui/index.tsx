@@ -1,38 +1,55 @@
 import { RoundedBox } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
-import { FC } from "react";
-import { TextureLoader, Vector3 } from "three";
+import { FC, useState } from "react";
+import { TextureLoader } from "three";
 import { BoardLines } from "./lines";
+import { getCoordsByEvent } from "../utils";
+import { Coords } from "../types";
 type BoardProps = {
   size: number;
   boardSize: number;
   onCellClick?: (x: number, y: number) => void;
-  y?: number;
+  position?: [number, number, number];
 };
 export const Board: FC<BoardProps> = ({
   size,
   boardSize,
   onCellClick,
-  y = 0,
+  position = [0, 0, 0],
 }) => {
   const cellSize = boardSize / (size - 1);
+  
   const jadeTexture = useLoader(TextureLoader, "/src/assets/texture.jpg");
   const linesColor = "#494949";
 
+  const [lastPointerPosition, setLastPointerPosition] =
+    useState<Coords | null>();
+
+  const onPointerDown = (e: any) => {
+    setLastPointerPosition(getCoordsByEvent(e, size, cellSize));
+  };
+
   const handleClick = (e: any) => {
-    const point = e.point as Vector3;
-    const x = Math.round(point.x / cellSize + (size - 1) / 2);
-    const y = Math.round(point.z / cellSize + (size - 1) / 2);
-    if (x < 0 || x >= size || y < 0 || y >= size) return;
-    onCellClick?.(x, y);
+    const coords = getCoordsByEvent(e, size, cellSize);
+    if (
+      !coords ||
+      coords.x !== lastPointerPosition?.x ||
+      coords.y !== lastPointerPosition?.y
+    ) {
+      setLastPointerPosition(null);
+      return;
+    }
+    console.log(lastPointerPosition);
+    onCellClick?.(coords.x, coords.y);
   };
   return (
-    <mesh position={[0, y, 0]}>
+    <mesh position={position}>
       <RoundedBox
         args={[boardSize + 1, 1, boardSize + 1]} // Розмір дошки
         radius={0.5} // Радіус заокруглення
-        smoothness={8} // Кількість сегментів для плавного заокруглення
-        onPointerDown={handleClick}
+        smoothness={6} // Кількість сегментів для плавного заокруглення
+        onPointerUp={handleClick}
+        onPointerDown={onPointerDown}
       >
         <meshPhysicalMaterial
           map={jadeTexture}
@@ -43,10 +60,8 @@ export const Board: FC<BoardProps> = ({
           clearcoat={0.95}
           clearcoatRoughness={0.9}
           sheen={1}
-          sheenColor="#6da08e"
+          sheenColor="#D5B58B"
           sheenRoughness={0.5}
-          // opacity={0.9}
-          // transparent={true}
         />
       </RoundedBox>
       <BoardLines

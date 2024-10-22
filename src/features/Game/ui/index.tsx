@@ -1,15 +1,19 @@
 import { FC } from "react";
-import { useGame } from "../../../entities/game";
 import { Stone } from "../../../shared/Stone";
 import { Board } from "../../../shared/Board";
+import { getStonePosition } from "../utils";
 type Props = {
-  y?: number;
+  position: [number, number, number];
+  boardState: number[][];
+  boardSize: number;
+  onStonePlaced: (x: number, y: number) => void;
 };
-export const GoBoard: FC<Props> = ({ y: boardY }) => {
-  const {
-    data: { boardState, boardSize },
-    move,
-  } = useGame();
+export const GoBoard: FC<Props> = ({
+  boardSize,
+  boardState,
+  onStonePlaced,
+  position,
+}) => {
   const fullBoardSize = boardSize + 1;
   const cellSize = fullBoardSize / (boardSize - 1); // Розмір однієї клітинки
   return (
@@ -17,10 +21,8 @@ export const GoBoard: FC<Props> = ({ y: boardY }) => {
       <Board
         size={boardSize}
         boardSize={fullBoardSize}
-        onCellClick={(x, y) => {
-          move(x, y);
-        }}
-        y={boardY}
+        onCellClick={onStonePlaced}
+        position={position}
       />
 
       {boardState.map((row, x) =>
@@ -30,7 +32,7 @@ export const GoBoard: FC<Props> = ({ y: boardY }) => {
             return (
               <Stone
                 key={`${x}-${y}`}
-                position={getStonePosition(x, y, cellSize, boardY)}
+                position={getStonePosition(x, y, cellSize, position[1])}
                 color={color}
               />
             );
@@ -41,13 +43,3 @@ export const GoBoard: FC<Props> = ({ y: boardY }) => {
     </>
   );
 };
-const getStonePosition = (
-  x: number,
-  y: number,
-  cellSize: number,
-  boardY: number = 0
-): [number, number, number] => [
-  (x - 9) * cellSize,
-  boardY + 0.7,
-  (y - 9) * cellSize,
-];
