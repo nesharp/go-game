@@ -10,17 +10,19 @@ type BoardProps = {
   boardSize: number;
   onCellClick?: (x: number, y: number) => void;
   position?: [number, number, number];
+  offset?: number;
 };
 export const Board: FC<BoardProps> = ({
   size,
   boardSize,
   onCellClick,
   position = [0, 0, 0],
+  offset = 2,
 }) => {
   const cellSize = boardSize / (size - 1);
 
-  const jadeTexture = useLoader(TextureLoader, "/texture.jpg");
-  const linesColor = "#494949";
+  const jadeTexture = useLoader(TextureLoader, "/jade-texture.jpg");
+  const linesColor = "#C8D5CD";
 
   const [lastPointerPosition, setLastPointerPosition] =
     useState<Coords | null>();
@@ -45,7 +47,7 @@ export const Board: FC<BoardProps> = ({
   return (
     <mesh position={position}>
       <RoundedBox
-        args={[boardSize + 1, 1, boardSize + 1]} // Розмір дошки
+        args={[boardSize + offset, 1, boardSize + offset]} // Розмір дошки
         radius={0.5} // Радіус заокруглення
         smoothness={6} // Кількість сегментів для плавного заокруглення
         onPointerUp={handleClick}
@@ -53,15 +55,12 @@ export const Board: FC<BoardProps> = ({
       >
         <meshPhysicalMaterial
           map={jadeTexture}
-          color={"#A98F6E"}
-          roughness={0.6}
-          // transmission={0.8}
-          thickness={2}
-          clearcoat={0.95}
+          // color={"#A98F6E"}
+          roughness={0.1}
+          transmission={0.5}
+          thickness={0.3}
+          clearcoat={0.8}
           clearcoatRoughness={0.9}
-          sheen={1}
-          sheenColor="#D5B58B"
-          sheenRoughness={0.5}
         />
       </RoundedBox>
       <BoardLines

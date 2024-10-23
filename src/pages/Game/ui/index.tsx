@@ -28,7 +28,7 @@ export const GamePage = () => {
     }
   };
   return (
-    <div className="cursor-none overflow-clip h-screen w-screen">
+    <div className="cursor-none  h-screen w-screen">
       {/* TODO:refactor this */}
       <div className="absolute top-10 right-8 z-50 ">
         <button onClick={onViewChange}>
