@@ -1,16 +1,11 @@
-import React, {
+import {
   createContext,
   useContext,
   useState,
-  useEffect,
   FC,
   PropsWithChildren,
 } from "react";
 import { GameData, HistoryItem } from "../types";
-import {
-  getFromLocalStorage,
-  saveToLocalStorage,
-} from "../../../shared/lib/utils";
 import { GoGameEngine } from "../../../temp/GameEngine";
 
 // Initial data for the game
@@ -34,7 +29,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 // Game provider component
 export const GameProvider: FC<PropsWithChildren<{}>> = function ({ children }) {
-  const [game, setGame] = useState<GoGameEngine>(new GoGameEngine());
+  const [game] = useState<GoGameEngine>(new GoGameEngine());
   const [data, setData] = useState<GameData>(initialData);
 
   // Load saved data from localStorage if available
@@ -73,7 +68,7 @@ export const GameProvider: FC<PropsWithChildren<{}>> = function ({ children }) {
     };
 
     const valid = game.makeMove({ x, y });
-    if(!valid) return;
+    if (!valid) return;
     setData(newData);
 
     // saveToLocalStorage(newData);

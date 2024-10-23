@@ -1,4 +1,3 @@
-import { config, useSpring } from "@react-spring/three";
 import React, { Suspense } from "react";
 
 const Monument = React.lazy(() => import("./BudhaMonument.tsx"));

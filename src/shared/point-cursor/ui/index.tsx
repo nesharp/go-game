@@ -3,7 +3,7 @@ import { useMousePosition } from "../hooks";
 type PointCursorProps = {
   type?: "default" | "grab";
 };
-export const PointCursor: FC<PointCursorProps> = ({ type = "default" }) => {
+export const PointCursor: FC<PointCursorProps> = () => {
   const { x, y } = useMousePosition();
 
   return (
