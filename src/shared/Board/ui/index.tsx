@@ -18,8 +18,8 @@ export const Board: FC<BoardProps> = ({
   position = [0, 0, 0],
 }) => {
   const cellSize = boardSize / (size - 1);
-  
-  const jadeTexture = useLoader(TextureLoader, "/src/assets/texture.jpg");
+
+  const jadeTexture = useLoader(TextureLoader, "/texture.jpg");
   const linesColor = "#494949";
 
   const [lastPointerPosition, setLastPointerPosition] =
