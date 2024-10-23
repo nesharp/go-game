@@ -11,6 +11,7 @@ import {
   getFromLocalStorage,
   saveToLocalStorage,
 } from "../../../shared/lib/utils";
+import { GoGameEngine } from "../../../temp/GameEngine";
 
 // Initial data for the game
 const initialData: GameData = {
@@ -33,15 +34,16 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 // Game provider component
 export const GameProvider: FC<PropsWithChildren<{}>> = function ({ children }) {
+  const [game, setGame] = useState<GoGameEngine>(new GoGameEngine());
   const [data, setData] = useState<GameData>(initialData);
 
   // Load saved data from localStorage if available
-  useEffect(() => {
-    const savedData = getFromLocalStorage();
-    if (savedData) {
-      setData(savedData);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedData = getFromLocalStorage();
+  //   if (savedData) {
+  //     setData(savedData);
+  //   }
+  // }, []);
 
   // Move function to update the board state
   const move = (x: number, y: number) => {
@@ -70,14 +72,17 @@ export const GameProvider: FC<PropsWithChildren<{}>> = function ({ children }) {
       moveHistory: newMoveHistory,
     };
 
+    const valid = game.makeMove({ x, y });
+    if(!valid) return;
     setData(newData);
-    saveToLocalStorage(newData);
+
+    // saveToLocalStorage(newData);
   };
 
   // Reset game to initial state
   const resetGame = () => {
     setData(initialData);
-    saveToLocalStorage(initialData);
+    // saveToLocalStorage(initialData);
   };
 
   return (

@@ -10,15 +10,21 @@ export const BudhaMonument: FC<Props> = ({
   position = [-15, -5, -30],
   ...props
 }) => {
-  const { nodes } = useGLTF("/scene.gltf");
+  const { nodes } = useGLTF("/scene.gltf", true);
 
   return (
-    <animated.group {...props} position={position}>
-      <group rotation={[degToRad(90), degToRad(180), degToRad(180)]}>
+    <animated.group
+      position={position}
+      {...props}
+    >
+      <group
+        rotation={[degToRad(90), degToRad(180), degToRad(180)]}
+      >
         <primitive object={nodes.mesh_0} />
         <primitive object={nodes.mesh_1} />
       </group>
     </animated.group>
   );
 };
+useGLTF.preload("/scene.gltf");
 export default BudhaMonument;

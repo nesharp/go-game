@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { TriangleLoader } from "../../../shared/loader";
 
 const Area = React.lazy(() => import("./Area"));
+
 export function LazyArea() {
   return (
     <Suspense

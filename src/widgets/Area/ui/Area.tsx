@@ -1,29 +1,68 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { degToRad } from "three/src/math/MathUtils.js";
-import { GoBoard } from "../../../features/Game";
-import { useGame } from "../../../entities/game";
-import { PropsWithChildren, Suspense } from "react";
+import { PropsWithChildren, useEffect, useRef } from "react";
+import { gsap } from "gsap"; // Import GSAP
 import sky_1k from "../../../assets/sky_1k.hdr";
-import {
-  AnimatedBudhaMonument,
-  LazyBudhaMonument,
-} from "../../../shared/BudhaMonument";
+import { LazyBudhaMonument } from "../../../shared/BudhaMonument";
+import { ViewMapKeys, ViewsMapItem } from "../types";
+
+const ViewsMap: Record<ViewMapKeys, ViewsMapItem> = {
+  top: {
+    maxAzimuthAngle: degToRad(0),
+    minAzimuthAngle: degToRad(0),
+    maxPolarAngle: degToRad(0),
+    minPolarAngle: degToRad(0),
+  },
+  side: {
+    maxAzimuthAngle: degToRad(85),
+    minAzimuthAngle: degToRad(-85),
+    maxPolarAngle: degToRad(65),
+    minPolarAngle: degToRad(65),
+  },
+  free: {
+    maxAzimuthAngle: degToRad(85),
+    minAzimuthAngle: degToRad(-85),
+    maxPolarAngle: degToRad(85),
+    minPolarAngle: degToRad(0),
+  },
+};
 
 type AreaProps = {
   children?: React.ReactNode;
+  view?: ViewMapKeys;
 };
-export function Area({ children }: PropsWithChildren<AreaProps>) {
-  const game = useGame();
-  const onStonePlaced = (x: number, y: number) => {
-    game.move(x, y);
-  };
+
+export function Area({
+  children,
+  view = "free",
+}: PropsWithChildren<AreaProps>) {
+  const controlsRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (controlsRef.current) {
+      // Get the current angles
+      const { maxAzimuthAngle, minAzimuthAngle, maxPolarAngle, minPolarAngle } =
+        ViewsMap[view];
+
+      // Animate the transition using GSAP
+      gsap.to(controlsRef.current, {
+        maxAzimuthAngle,
+        minAzimuthAngle,
+        maxPolarAngle,
+        minPolarAngle,
+        duration: 1, // Duration of the transition in seconds
+        ease: "sine", // Easing function
+      });
+    }
+  }, [view]);
+
   return (
     <Canvas
       style={{
-        cursor: "none",
         width: "100vw",
         height: "100vh",
+        overflow: "hidden",
       }}
       camera={{
         position: [0, 10, 20],
@@ -32,27 +71,20 @@ export function Area({ children }: PropsWithChildren<AreaProps>) {
     >
       <ambientLight intensity={0.3} />
       <directionalLight position={[5, 10, 5]} intensity={1} color="#FFFEAB" />
-      {/* <AnimatedBudhaMonument /> */}
       <LazyBudhaMonument />
-      <GoBoard
-        boardSize={19}
-        boardState={game.data.boardState}
-        onStonePlaced={onStonePlaced}
-        position={[0, 0, 0]}
-      />
       <Environment background files={sky_1k} backgroundBlurriness={0} />
       <OrbitControls
+        ref={controlsRef}
         zoomSpeed={1}
         maxZoom={1}
         minZoom={1}
         minDistance={15}
         maxDistance={25}
         enablePan={false}
-        maxAzimuthAngle={degToRad(85)}
-        minAzimuthAngle={degToRad(-85)}
       />
       {children}
     </Canvas>
   );
 }
+
 export default Area;
