@@ -15,7 +15,7 @@ export const GoBoard: FC<Props> = ({
   position,
 }) => {
   const fullBoardSize = boardSize + 1;
-  const cellSize = fullBoardSize / (boardSize - 1); // Розмір однієї клітинки
+  const cellSize = fullBoardSize / (boardSize - 1);
   return (
     <>
       <Board

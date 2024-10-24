@@ -1,35 +1,10 @@
 import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
-import { degToRad } from "three/src/math/MathUtils.js";
-import { PropsWithChildren, useEffect, useRef } from "react";
-import { gsap } from "gsap"; // Import GSAP
+import { PropsWithChildren, useRef } from "react";
 import sky_1k from "../../../assets/sky_1k.hdr";
-import {
-  BudhaMonument,
-  LazyBudhaMonument,
-} from "../../../shared/BudhaMonument";
-import { ViewMapKeys, ViewsMapItem } from "../types";
-
-const ViewsMap: Record<ViewMapKeys, ViewsMapItem> = {
-  top: {
-    maxAzimuthAngle: degToRad(0),
-    minAzimuthAngle: degToRad(0),
-    maxPolarAngle: degToRad(0),
-    minPolarAngle: degToRad(0),
-  },
-  side: {
-    maxAzimuthAngle: degToRad(85),
-    minAzimuthAngle: degToRad(-85),
-    maxPolarAngle: degToRad(65),
-    minPolarAngle: degToRad(65),
-  },
-  free: {
-    maxAzimuthAngle: degToRad(85),
-    minAzimuthAngle: degToRad(-85),
-    maxPolarAngle: degToRad(85),
-    minPolarAngle: degToRad(0),
-  },
-};
+import { LazyBudhaMonument } from "../../../shared/BudhaMonument";
+import { ViewMapKeys } from "../types";
+import { useGameView } from "../hooks/useGameView";
 
 type AreaProps = {
   children?: React.ReactNode;
@@ -42,23 +17,7 @@ export function Area({
 }: PropsWithChildren<AreaProps>) {
   const controlsRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (controlsRef.current) {
-      // Get the current angles
-      const { maxAzimuthAngle, minAzimuthAngle, maxPolarAngle, minPolarAngle } =
-        ViewsMap[view];
-
-      // Animate the transition using GSAP
-      gsap.to(controlsRef.current, {
-        maxAzimuthAngle,
-        minAzimuthAngle,
-        maxPolarAngle,
-        minPolarAngle,
-        duration: 1, // Duration of the transition in seconds
-        ease: "sine", // Easing function
-      });
-    }
-  }, [view]);
+  useGameView(view, controlsRef);
 
   return (
     <Canvas

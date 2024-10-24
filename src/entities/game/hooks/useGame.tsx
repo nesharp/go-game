@@ -33,14 +33,6 @@ export const GameProvider: FC<PropsWithChildren<{}>> = function ({ children }) {
   const [game] = useState<GoGameEngine>(new GoGameEngine());
   const [data, setData] = useState<GameData>(initialData);
 
-  // Load saved data from localStorage if available
-  // useEffect(() => {
-  //   const savedData = getFromLocalStorage();
-  //   if (savedData) {
-  //     setData(savedData);
-  //   }
-  // }, []);
-
   // Move function to update the board state
   const move = (x: number, y: number) => {
     if (data.boardState[x][y] !== 0) return;
@@ -75,13 +67,11 @@ export const GameProvider: FC<PropsWithChildren<{}>> = function ({ children }) {
     setTimeout(() => {
       setData(newData);
     }, 100);
-    // saveToLocalStorage(newData);
   };
 
   // Reset game to initial state
   const resetGame = () => {
     setData(initialData);
-    // saveToLocalStorage(initialData);
   };
 
   return (
