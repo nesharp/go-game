@@ -4,7 +4,10 @@ import { degToRad } from "three/src/math/MathUtils.js";
 import { PropsWithChildren, useEffect, useRef } from "react";
 import { gsap } from "gsap"; // Import GSAP
 import sky_1k from "../../../assets/sky_1k.hdr";
-import { LazyBudhaMonument } from "../../../shared/BudhaMonument";
+import {
+  BudhaMonument,
+  LazyBudhaMonument,
+} from "../../../shared/BudhaMonument";
 import { ViewMapKeys, ViewsMapItem } from "../types";
 
 const ViewsMap: Record<ViewMapKeys, ViewsMapItem> = {

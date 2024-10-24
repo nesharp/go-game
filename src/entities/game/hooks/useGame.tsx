@@ -7,6 +7,7 @@ import {
 } from "react";
 import { GameData, HistoryItem } from "../types";
 import { GoGameEngine } from "../../../temp/GameEngine";
+import { playStoneSound } from "../utils";
 
 // Initial data for the game
 const initialData: GameData = {
@@ -69,8 +70,11 @@ export const GameProvider: FC<PropsWithChildren<{}>> = function ({ children }) {
 
     const valid = game.makeMove({ x, y });
     if (!valid) return;
-    setData(newData);
 
+    playStoneSound();
+    setTimeout(() => {
+      setData(newData);
+    }, 100);
     // saveToLocalStorage(newData);
   };
 
